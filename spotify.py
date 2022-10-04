@@ -105,13 +105,13 @@ def graph_audio_features(audio_features_list, x_axis, y_axis):
 
 
 
-playlist_name = input("Enter playlist name: ")
-playlist = get_playlist_from_playlist_name(playlist_name)
-tracks = get_playlist_tracks(playlist)
-track_ids = get_track_ids_from_tracks(tracks)
+# playlist_name = input("Enter playlist name: ")
+# playlist = get_playlist_from_playlist_name(playlist_name)
+# tracks = get_playlist_tracks(playlist)
+# track_ids = get_track_ids_from_tracks(tracks)
 # batched_track_ids = batch_by_100s(track_ids)
-playlist_audio_features = get_audio_features_for_track_ids(track_ids)
-print(playlist_audio_features)
+# playlist_audio_features = get_audio_features_for_track_ids(track_ids)
+# print(playlist_audio_features)
 # graph_audio_features(playlist_audio_features, 'energy', 'tempo')
 
 
