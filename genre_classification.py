@@ -46,34 +46,22 @@ def preprocess_data():
     return data_train, data_test
 
 
-def mlp_classifier(data_train, data_test):
+def mlp_classifier(data_train):
     X_train = data_train.drop('tag', axis=1).values
     y_train = data_train['tag'].values
-
-    # X_test = data_test.drop('tag', axis=1).values
-    # y_test = data_test['tag'].values
 
     clf = MLPClassifier(solver='lbfgs', alpha=.0001, hidden_layer_sizes=(10, 5), activation='logistic', max_iter=1000)
     clf.fit(X_train, y_train)
     return clf
 
-    score = clf.score(X_test, y_test)
-    return score
 
-
-def svm_classifier(data_train, data_test):
+def svm_classifier(data_train):
     X_train = data_train.drop('tag', axis=1).values
     y_train = data_train['tag'].values
-    #
-    # X_test = data_test.drop('tag', axis=1).values
-    # y_test = data_test['tag'].values
 
     clf = svm.SVC(C=.55, kernel="rbf")
     clf.fit(X_train, y_train)
     return clf
-
-    score = clf.score(X_test, y_test)
-    return score
 
 
 def main():
@@ -81,11 +69,13 @@ def main():
     X_test = data_test.drop('tag', axis=1).values
     y_test = data_test['tag'].values
 
-    mlp = mlp_classifier(data_train, data_test)
-    print(f"MLP score: {mlp.score(X_test, y_test)}")
+    mlp = mlp_classifier(data_train)
+    # print(f"MLP score: {mlp.score(X_test, y_test)}")
 
-    svm = svm_classifier(data_train, data_test)
-    print(f"SVM score: {svm.score(X_test, y_test)}")
+    svm = svm_classifier(data_train)
+    # print(f"SVM score: {svm.score(X_test, y_test)}")
+
+    return mlp, svm
 
 
 if __name__ == '__main__':

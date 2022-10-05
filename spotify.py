@@ -90,6 +90,10 @@ def get_track_ids_from_tracks(tracks):
     ]
 
 
+def get_audio_features_for_track(track_id):
+    return sp.audio_features(track_id)
+
+
 def get_audio_features_for_track_ids(track_ids):
     #     audio_features() only accepts at most 100 track ids, so we need to batch
     batched_track_ids = batch_by_100s(track_ids)
@@ -113,7 +117,6 @@ def graph_audio_features(audio_features_list, x_axis, y_axis):
     plt.ylabel(y_axis)
     plt.title(f"Displaying {x_axis} vs. {y_axis}")
     plt.show()
-
 
 # def track_similarity(track1, track2):
 #     """
@@ -143,7 +146,7 @@ def graph_audio_features(audio_features_list, x_axis, y_axis):
 
 # track_id = input("Enter track id: ")
 # print(track_audio_features(track_id))
-search = input("Enter track name: ")
-t = search_tracks(search)
-t0 = select_track_from_search(t)
-print(json.dumps(t0, indent=4))
+# search = input("Enter track name: ")
+# t = search_tracks(search)
+# t0 = select_track_from_search(t)
+# print(json.dumps(t0, indent=4))
