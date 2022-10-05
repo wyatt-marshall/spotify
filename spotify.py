@@ -2,6 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 from spotipy.oauth2 import SpotifyOAuth
 import matplotlib.pyplot as plt
+import json
 
 SPOTIPY_CLIENT_ID = "5343e166b6574443b09079a052114047"
 SPOTIPY_CLIENT_SECRET = "f742e42622804c29ab33a3cc52022225"
@@ -20,6 +21,38 @@ def batch_by_100s(data):
         chunk = data[i:i + 100]
         batched.append(chunk)
     return batched
+
+
+def search_tracks(track_name: str) -> dict:
+    return sp.search(track_name, type='track')['tracks']
+
+
+def resolve_artists_for_track(track):
+    return [
+        artist['name']
+        for artist in track['artists']
+    ]
+
+
+def select_track_from_search(tracks: dict) -> dict:
+    while tracks['next']:
+        for track in tracks['items']:
+            artists = resolve_artists_for_track(track)
+            print(f"Track: {track['name']} | Artist(s): {', '.join(artists)} | Album: {track['album']['name']}")
+            while True:
+                correct_track = input(
+                    "Is this the correct track? Enter 'y' to confirm, or 'n' to view the next track (enter 'q' to quit "
+                    "search): ")
+                if correct_track == 'y' or correct_track == 'Y':
+                    return track
+                elif correct_track == 'n' or correct_track == 'N':
+                    break
+                elif correct_track == 'q' or correct_track == 'Q':
+                    return
+                print("Enter 'y' or 'n'")
+        print("Loading more tracks...")
+        tracks = sp.next(tracks)['tracks']
+    raise Exception("Track not found")
 
 
 def track_audio_features(track_id):
@@ -81,6 +114,7 @@ def graph_audio_features(audio_features_list, x_axis, y_axis):
     plt.title(f"Displaying {x_axis} vs. {y_axis}")
     plt.show()
 
+
 # def track_similarity(track1, track2):
 #     """
 #     given two tracks, return similarity value given comparison of tracks audio_features
@@ -109,3 +143,7 @@ def graph_audio_features(audio_features_list, x_axis, y_axis):
 
 # track_id = input("Enter track id: ")
 # print(track_audio_features(track_id))
+search = input("Enter track name: ")
+t = search_tracks(search)
+t0 = select_track_from_search(t)
+print(json.dumps(t0, indent=4))
