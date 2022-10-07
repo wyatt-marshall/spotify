@@ -23,14 +23,38 @@ def batch_by_100s(data):
     return batched
 
 
+def enter_search_term():
+    query = input("Search: ")
+    return query
+
+
+def simple_track_search(query):
+    return sp.search(query)
+
+
 def search_tracks(track_name: str) -> dict:
     return sp.search(track_name, type='track')['tracks']
+
+
+def search_albums(album_name):
+    return sp.search(album_name, type='album')['albums']
+
+
+def search_artists(artist_name):
+    return sp.search(artist_name, type='artist')['artists']
 
 
 def resolve_artists_for_track(track):
     return [
         artist['name']
         for artist in track['artists']
+    ]
+
+
+def resolve_artists_for_album(album):
+    return [
+        artist['name']
+        for artist in album['artists']
     ]
 
 
@@ -53,6 +77,47 @@ def select_track_from_search(tracks: dict) -> dict:
         print("Loading more tracks...")
         tracks = sp.next(tracks)['tracks']
     raise Exception("Track not found")
+
+
+def select_album_from_search(albums):
+    while albums['next']:
+        for album in albums['items']:
+            artists = resolve_artists_for_album(album)
+            print(f"Album: {album['name']} | Artist(s): {', '.join(artists)} | Type: {album['album_type']}")
+            while True:
+                correct_album = input(
+                    "Is this the correct album? Enter 'y' to confirm, or 'n' to view the next album (enter 'q' to quit "
+                    "search): ")
+                if correct_album == 'y' or correct_album == 'Y':
+                    return album
+                elif correct_album == 'n' or correct_album == 'N':
+                    break
+                elif correct_album == 'q' or correct_album == 'Q':
+                    return
+                print("Enter 'y' or 'n'")
+        print("Loading more albums...")
+        albums = sp.next(albums)['albums']
+    raise Exception("Album not found")
+
+
+def select_artist_from_search(artists):
+    while artists['next']:
+        for artist in artists['items']:
+            print(f"Artist: {artist['name']}")
+            while True:
+                correct_artist = input(
+                    "Is this the correct artist? Enter 'y' to confirm, or 'n' to view the next artist (enter 'q' to quit "
+                    "search): ")
+                if correct_artist == 'y' or correct_artist == 'Y':
+                    return artist
+                elif correct_artist == 'n' or correct_artist == 'N':
+                    break
+                elif correct_artist == 'q' or correct_artist == 'Q':
+                    return
+                print("Enter 'y' or 'n'")
+        print("Loading more artists...")
+        artists = sp.next(artists)['artists']
+    raise Exception("Artist not found")
 
 
 def track_audio_features(track_id):
@@ -133,20 +198,10 @@ def graph_audio_features(audio_features_list, x_axis, y_axis):
 #         if feature in ['danceability', 'energy', ]
 #             comparison[feature] = abs(audio_features[0][feature] - audio_features[1][feature])
 
+# albums = search_albums(enter_search_term())
+# album = select_album_from_search(albums)
+# print(json.dumps(album, indent=4))
 
-# playlist_name = input("Enter playlist name: ")
-# playlist = get_playlist_from_playlist_name(playlist_name)
-# tracks = get_playlist_tracks(playlist)
-# track_ids = get_track_ids_from_tracks(tracks)
-# batched_track_ids = batch_by_100s(track_ids)
-# playlist_audio_features = get_audio_features_for_track_ids(track_ids)
-# print(playlist_audio_features)
-# graph_audio_features(playlist_audio_features, 'energy', 'tempo')
-
-
-# track_id = input("Enter track id: ")
-# print(track_audio_features(track_id))
-# search = input("Enter track name: ")
 # t = search_tracks(search)
 # t0 = select_track_from_search(t)
 # print(json.dumps(t0, indent=4))
